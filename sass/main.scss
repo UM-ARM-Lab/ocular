@@ -1,0 +1,684 @@
+$container-width: 1140px !default;
+$container-padding: 15px !default;
+$responsive-cutoff: 768px !default;
+
+$h1-font-size: 2rem !default;
+$h2-font-size: 1.75rem !default;
+$h3-font-size: 1.5rem !default;
+$h4-font-size: 1.25rem !default;
+$h5-font-size: 1rem !default;
+$h6-font-size: 1rem !default;
+
+$color-text: #212529 !default;
+$color-primary: #e1814c !default;
+$color-light: #f8f9fa !default;
+$color-white: #fff !default;
+$color-black: #000 !default;
+$color-btn: #343a40 !default;
+$color-border: #dee2e6 !default;
+$color-selection: #dee2e6 !default;
+
+$color-text-dark: #d1cdc7 !default;
+$color-primary-dark: #e1814c !default;
+$color-light-dark: #222222 !default;
+$color-white-dark: #222222 !default;
+$color-black-dark: #e7e5e4 !default;
+$color-btn-dark: #cbc5bf !default;
+$color-border-dark: false !default;
+$color-selection-dark: false !default;
+
+@font-face {
+    font-family: "Barlow Condensed";
+    font-style: normal;
+    font-weight: 600;
+    font-display: block;
+    src: url("fonts/barlow-condensed-latin-600.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Barlow Condensed";
+    font-style: normal;
+    font-weight: 700;
+    font-display: block;
+    src: url("fonts/barlow-condensed-latin-700.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Source Sans 3";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: block;
+    src: url("fonts/source-sans-3-latin-ext-variable.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Source Sans 3";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: block;
+    src: url("fonts/source-sans-3-latin-variable.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@import "_reset.scss";
+@import "_color.scss";
+@import "_layout.scss";
+@import "_buttons.scss";
+@import "_figures.scss";
+@import "_footnotes.scss";
+@import "_highlight.scss";
+
+:root {
+    --font-body: "Source Sans 3";
+    --font-heading: "Barlow Condensed";
+    --color-slide-accent: #e1814c;
+    --color-muted-copy: #d1cdc7;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.header h1 {
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 0.98;
+    text-transform: none;
+}
+
+.header h2,
+.header p {
+    color: var(--color-text);
+    font-family: var(--font-body);
+}
+
+//  TODO: clean this. it scales down large tex equations for small screens
+.katex {
+    max-width: 100%;
+    display: inline-block;
+}
+
+.katex-display {
+    text-align: center;
+    font-size: 1em;
+    /* Default size */
+}
+
+/* Scale down when the equation gets too wide */
+@media (max-width: 600px) {
+    .katex-display {
+        font-size: 0.65em;
+        /* Reduce font size */
+    }
+}
+
+/* Second threshold for even smaller screens */
+@media (max-width: 400px) {
+    .katex-display {
+        font-size: 0.55em;
+        /* Scale down again at 400px */
+    }
+}
+
+/* Abstract with full-width media above text */
+.abstract-with-figure {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: stretch;
+    margin: 2rem 0;
+}
+
+.figure-column {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.figure-column figure,
+.figure-column img,
+.figure-column video {
+    width: 100%;
+}
+
+.figure-column img,
+.figure-column video {
+    height: auto;
+}
+
+.text-column {
+    width: 100%;
+    min-width: 0;
+    hyphens: none;
+    word-break: normal;
+    overflow-wrap: normal;
+
+    p {
+        hyphens: none !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .abstract-with-figure {
+        gap: 1.5rem;
+    }
+}
+
+/* Problem statement two-column cards */
+.problem-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
+    margin: 1.5rem 0 2rem;
+}
+
+.problem-card {
+    background: var(--color-light);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    hyphens: none;
+}
+
+.problem-card h3 {
+    margin: 0 0 0.5rem;
+}
+
+.problem-card p,
+.problem-card ul {
+    margin: 0 0 0.65rem;
+}
+
+.problem-card p,
+.problem-card li {
+    hyphens: none;
+}
+
+.problem-card ul {
+    padding-left: 1.2rem;
+}
+
+/* Main article body typography */
+.content p,
+.content li {
+    hyphens: none;
+    text-align: justify;
+}
+
+.content figcaption {
+    text-align: justify;
+}
+
+.content strong {
+    color: var(--color-slide-accent);
+}
+
+.content>h1 {
+    margin: 2rem 0 0.65rem;
+    color: var(--color-slide-accent);
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.content>h1::after {
+    content: none;
+}
+
+.content>h2 {
+    margin: 1.55rem 0 0.45rem;
+    color: var(--color-slide-accent);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+.content>h3 {
+    margin: 1.25rem 0 0.5rem;
+    color: var(--color-slide-accent);
+    font-family: var(--font-heading);
+    font-size: 1.28rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.ocular-hero {
+    margin: 1.35rem 0 1.9rem;
+}
+
+.ocular-hero video {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--color-light);
+}
+
+.ocular-hero-caption {
+    margin: 0 0 0.7rem;
+    text-align: justify;
+    font-size: 1.08rem;
+    line-height: 1.55;
+}
+
+.capture-abstract {
+    margin: 1.35rem 0 1.9rem;
+    padding: 1rem 1.15rem 1.05rem;
+    border: 1px solid color-mix(in srgb, var(--color-border), var(--color-slide-accent) 28%);
+    border-radius: 0.4rem;
+    background: color-mix(in srgb, var(--color-light), var(--color-slide-accent) 5%);
+}
+
+.capture-abstract p {
+    margin: 0;
+    text-align: justify;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.capture-run-in-heading {
+    margin-right: 0.35rem;
+    color: var(--color-slide-accent);
+    font-family: var(--font-heading);
+    font-size: 1.28rem;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.carousel-title {
+    width: 90%;
+    max-width: 100%;
+    margin: 1.1rem auto 0;
+    text-align: left;
+
+    p {
+        margin: 0;
+        text-align: left;
+        font-size: 1rem;
+        font-weight: 400;
+    }
+}
+
+.content .carousel-title+figure .carousel-wrapper {
+    margin-top: 0.15rem;
+}
+
+.inference-video-panel {
+    width: 100%;
+    margin: 1.3rem 0 1.8rem;
+}
+
+.inference-picker-controls {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: 0.5rem;
+    row-gap: 0.5rem;
+    align-items: stretch;
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+}
+
+.inference-picker-group {
+    display: contents;
+}
+
+.inference-picker-label {
+    align-self: center;
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 1.08em;
+    font-weight: 700;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.inference-picker-options {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.inference-option {
+    border: 1px solid var(--color-border);
+    border-radius: 0.35rem;
+    background: var(--color-light);
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 0.28rem 0.65rem;
+    font: inherit;
+    line-height: 1.15;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.inference-option sub {
+    font-size: 0.7em;
+    line-height: 0;
+}
+
+.inference-option:hover {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary), transparent 86%);
+    color: var(--color-primary);
+}
+
+.inference-option.active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.inference-option.active strong {
+    color: inherit;
+}
+
+.inference-video-stage {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    background: var(--color-light);
+}
+
+.inference-comparison-video {
+    display: none;
+    width: 100%;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background: var(--color-light);
+}
+
+.inference-comparison-video.active {
+    display: block;
+}
+
+.inference-video-note {
+    margin: 0.4rem 0 0;
+    font-size: 1rem;
+    line-height: 1.45;
+}
+
+.result-table-wrap {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+}
+
+.result-table {
+    width: 100%;
+    min-width: 860px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
+.result-table caption {
+    caption-side: top;
+    padding: 0.65rem 0.8rem;
+    text-align: left;
+    font-weight: 600;
+    background: var(--color-light);
+}
+
+.result-table th,
+.result-table td {
+    padding: 0.45rem 0.55rem;
+    border: 1px solid var(--color-border);
+    text-align: center;
+    vertical-align: middle;
+}
+
+.result-table th {
+    background: var(--color-light);
+    font-weight: 600;
+}
+
+.result-table .method-cell {
+    width: 5.1rem;
+    max-width: 5.1rem;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+.result-table td.method-cell {
+    text-align: left;
+}
+
+.result-table .method-ours-tag {
+    display: block;
+}
+
+.result-table .nowrap {
+    white-space: nowrap;
+}
+
+.result-table thead th.method-cell {
+    text-align: center;
+}
+
+.result-table .narrow-col {
+    width: 6.9rem;
+    max-width: 6.9rem;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+.result-table .metric-cell {
+    width: 10rem;
+    max-width: 10rem;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.2;
+    font-size: 0.9rem;
+}
+
+.result-table .ok {
+    background: rgba(61, 140, 64, 0.18);
+}
+
+.result-table .bad,
+.table-note .bad {
+    background: rgba(196, 55, 55, 0.2);
+}
+
+.table-note {
+    margin-top: -0.7rem;
+    font-size: 0.9rem;
+}
+
+.note-chip {
+    display: inline-block;
+    padding: 0.05rem 0.35rem;
+    border-radius: 0.25rem;
+}
+
+.status {
+    display: inline-grid;
+    place-items: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 999px;
+    font-weight: 900;
+    line-height: 0.75;
+    vertical-align: middle;
+}
+
+.status.check {
+    color: #0f7a35;
+    font-size: 1.45rem;
+    -webkit-text-stroke: 0.025em currentColor;
+    text-shadow: 0 0 0 currentColor;
+}
+
+.status.cross {
+    color: #b3261e;
+    font-size: 1.65rem;
+    -webkit-text-stroke: 0.02em currentColor;
+    text-shadow: 0 0 0 currentColor;
+}
+
+.status.neutral {
+    width: auto;
+    height: auto;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    font-weight: 600;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    article,
+    .content {
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    .header {
+        max-width: 100%;
+        margin-top: 1.2rem;
+        margin-bottom: 1.4rem;
+
+        h1 {
+            max-width: calc(100vw - 2rem);
+            margin-right: auto;
+            margin-left: auto;
+            font-size: clamp(0.78rem, 3.8vw, 0.95rem);
+            letter-spacing: 0.015em;
+            line-height: 1.05;
+            text-wrap: normal;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        h2 {
+            max-width: calc(100vw - 2rem);
+            margin-right: auto;
+            margin-left: auto;
+            font-size: 0.86rem;
+            line-height: 1.25;
+            text-wrap: normal;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+
+            span {
+                display: block;
+                max-width: 100%;
+            }
+        }
+
+        a {
+            text-wrap: wrap;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        >* {
+            margin-bottom: 0.65rem;
+        }
+    }
+
+    .carousel-title {
+        width: 100%;
+    }
+
+    .content>h1 {
+        margin-top: 1.5rem;
+        font-size: 1.35rem;
+    }
+
+    .content>h2 {
+        margin-top: 1.2rem;
+        font-size: 1.12rem;
+    }
+
+    .content>h3 {
+        margin-top: 1rem;
+        font-size: 1.12rem;
+        letter-spacing: 0.03em;
+    }
+
+    .ocular-hero {
+        margin: 1rem 0 1.4rem;
+    }
+
+    .ocular-hero p {
+        font-size: 1.04rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .capture-abstract {
+        width: 100%;
+        max-width: 100%;
+        margin: 1rem 0 1.4rem;
+        padding: 0.85rem 0.95rem;
+    }
+
+    .capture-abstract p {
+        font-size: 1.05rem;
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+    }
+
+    .capture-run-in-heading {
+        font-size: 1.18rem;
+    }
+
+    .inference-picker-group {
+        display: contents;
+    }
+
+    .inference-picker-controls {
+        grid-template-columns: 1fr;
+        row-gap: 0.3rem;
+    }
+
+    .inference-option {
+        padding: 0.25rem 0.45rem;
+        font-size: 0.92rem;
+    }
+
+    .result-table {
+        font-size: 0.84rem;
+    }
+}
