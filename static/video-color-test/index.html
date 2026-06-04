@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Color Pipeline Test</title>
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #222222;
+  color: #d1cdc7;
+  font: 16px/1.45 system-ui, sans-serif;
+}
+main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 56px; }
+h1 { margin: 0 0 8px; font-size: 28px; }
+h2 { margin: 28px 0 10px; font-size: 18px; }
+p { margin: 0 0 12px; max-width: 78ch; }
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 12px 0 24px;
+}
+.tile { min-width: 0; }
+.label { margin: 0 0 6px; font-size: 13px; color: #d1cdc7; }
+.patch {
+  width: 100%;
+  aspect-ratio: 8 / 3;
+  display: block;
+}
+.css-212121 { background: #212121; }
+.css-222222 { background: #222222; }
+.css-232323 { background: #232323; }
+.css-262626 { background: #262626; }
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  width: min(100%, 760px);
+  margin: 10px 0 24px;
+}
+.half { aspect-ratio: 8 / 3; }
+.page-bg-box {
+  width: min(100%, 760px);
+  padding: 24px;
+  background: #222222;
+  margin: 10px 0 24px;
+}
+.page-bg-box .patch { max-width: 560px; margin: 0 auto; }
+video, img { background: transparent; }
+.hint { color: #aaa39c; font-size: 14px; }
+code { color: #f0c5aa; }
+</style>
+</head>
+<body>
+<main>
+<h1>Video Color Pipeline Test</h1>
+<p>Page background is CSS <code>#222222</code>. Look for which MP4 rectangles visually disappear into the page background on the problematic display.</p>
+
+<h2>CSS Swatches</h2>
+<div class="row">
+  <div class="tile"><div class="label">CSS #212121</div><div class="patch css-212121"></div></div>
+  <div class="tile"><div class="label">CSS #222222 (page color)</div><div class="patch css-222222"></div></div>
+  <div class="tile"><div class="label">CSS #232323</div><div class="patch css-232323"></div></div>
+  <div class="tile"><div class="label">CSS #262626</div><div class="patch css-262626"></div></div>
+</div>
+
+<h2>PNG Swatches</h2>
+<div class="row">
+  <div class="tile"><div class="label">PNG #212121</div><img class="patch" src="./solid-212121.png"></div>
+  <div class="tile"><div class="label">PNG #222222</div><img class="patch" src="./solid-222222.png"></div>
+  <div class="tile"><div class="label">PNG #232323</div><img class="patch" src="./solid-232323.png"></div>
+  <div class="tile"><div class="label">PNG #262626</div><img class="patch" src="./solid-262626.png"></div>
+</div>
+
+<h2>MP4 Capture-Style Encoding</h2>
+<p class="hint">These use yuv420p with unknown color tags, matching the Capture video style.</p>
+<div class="row">
+  <div class="tile"><div class="label">MP4 input #212121</div><video class="patch" autoplay muted loop playsinline src="./solid-212121-capture-style.mp4"></video></div>
+  <div class="tile"><div class="label">MP4 input #222222</div><video class="patch" autoplay muted loop playsinline src="./solid-222222-capture-style.mp4"></video></div>
+  <div class="tile"><div class="label">MP4 input #232323</div><video class="patch" autoplay muted loop playsinline src="./solid-232323-capture-style.mp4"></video></div>
+  <div class="tile"><div class="label">MP4 input #262626</div><video class="patch" autoplay muted loop playsinline src="./solid-262626-capture-style.mp4"></video></div>
+</div>
+
+<h2>MP4 Full-Range BT.709 Encoding</h2>
+<div class="row">
+  <div class="tile"><div class="label">MP4 input #212121</div><video class="patch" autoplay muted loop playsinline src="./solid-212121-fullrange-bt709.mp4"></video></div>
+  <div class="tile"><div class="label">MP4 input #222222</div><video class="patch" autoplay muted loop playsinline src="./solid-222222-fullrange-bt709.mp4"></video></div>
+  <div class="tile"><div class="label">MP4 input #232323</div><video class="patch" autoplay muted loop playsinline src="./solid-232323-fullrange-bt709.mp4"></video></div>
+  <div class="tile"><div class="label">MP4 input #262626</div><video class="patch" autoplay muted loop playsinline src="./solid-262626-fullrange-bt709.mp4"></video></div>
+</div>
+
+<h2>Edge Test: CSS vs MP4</h2>
+<p class="hint">Left half is CSS #222222, right half is MP4. If a seam appears, the MP4 pipeline differs from CSS.</p>
+<div class="comparison">
+  <div class="half css-222222"></div>
+  <video class="half" autoplay muted loop playsinline src="./solid-222222-capture-style.mp4"></video>
+</div>
+<div class="comparison">
+  <div class="half css-222222"></div>
+  <video class="half" autoplay muted loop playsinline src="./solid-222222-fullrange-bt709.mp4"></video>
+</div>
+
+<h2>Video Rectangle on Page Background</h2>
+<p class="hint">If this rectangle is visible, MP4 pixels do not match the CSS page background on this device.</p>
+<div class="page-bg-box">
+  <video class="patch" autoplay muted loop playsinline src="./solid-222222-capture-style.mp4"></video>
+</div>
+</main>
+</body>
+</html>
