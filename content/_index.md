@@ -20,7 +20,7 @@ favicon = true
 
 
 <section class="ocular-hero" aria-label="SplitCP and OCULAR rollout comparison">
-<p class="ocular-hero-caption">(Left) SplitCP performs a global calibration of dynamics uncertainty, possibly resulting in overconfident and/or overconservative motion. (Right) <strong>OCULAR</strong> calibrates the approximate dynamics model conditioned on velocity, action, and observation, and does not require data from the test-time environment.</p>
+<p class="ocular-hero-caption">(Left) SplitCP calibrates dynamics uncertainty <em>globally</em>, possibly resulting in overconfident and/or overconservative motion. (Right) <strong>OCULAR</strong> calibrates the approximate dynamics model conditioned on velocity, action, and observation, and does not require data from the test-time environment.</p>
 <video autoplay muted loop controls playsinline preload="metadata" poster="./hero_videos/ocular_splitcp_ours_hero_maps.jpg">
     <source src="./hero_videos/ocular_splitcp_ours_hero_maps.mp4" type="video/mp4">
 </video>
@@ -180,7 +180,7 @@ We numerically validate the coverage of the prediction regions `$\hat{\mathcal C
 We also conduct motion planning experiments to demonstrate the utility of our method for probabilistically safe motion planning under model mismatch and external perturbations.
 For all methods the MPC planning cost involves a distance-to-subgoal term, a collision penalty and a penalty for transitions with high estimated uncertainty.
 
-<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260604-rerender">
+<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260604-bt709">
     <div class="inference-picker-controls">
         <div class="inference-picker-group" aria-label="Map">
             <span class="inference-picker-label">Map</span>
