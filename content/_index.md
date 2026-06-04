@@ -63,7 +63,7 @@ We validate **OCULAR** on a double-integrator in Isaac Sim using a floating came
 
 {{ figure(alt=["Isaac Sim icy main map flyover", "Isaac Sim icy middle map flyover", "Isaac Sim icy side map flyover"] labels=["icyMain", "icyMiddle", "icySide"] src=["./flyover_map_videos/rivermark_Tsection_icyMain_flyover_maponly_2560x1440_24fps_web_crf32.mp4", "./flyover_map_videos/rivermark_Tsection_icyMiddle_flyover_maponly_2560x1440_24fps_web_crf32.mp4", "./flyover_map_videos/rivermark_Tsection_icySide_flyover_maponly_2560x1440_24fps_web_crf32.mp4"]) }}
 
-Using Monte Carlo propagation, we numerically estimate how likely the prediction regions `$\hat{\mathcal C}\subseteq \mathcal S$` constructed by different methods are to contain the future *unknown* state `$s_{t+1}$`. This containment likelihood (i.e., coverage) is reported separately for the nominal road regions (ID relative to `$\tilde f$`) and the icy regions (OOD relative to `$\tilde f$`). Prediction region volume-efficiency is reported as a ratio relative to a linear-Gaussian oracle with access to the unknown ground-truth dynamics.
+Using Monte Carlo propagation, we estimate the likelihood of the prediction regions `$\hat{\mathcal C}\subseteq \mathcal S$` containing the future *unknown* state `$s_{t+1}$`. This containment likelihood (i.e., coverage) is reported separately for the nominal road regions (ID relative to `$\tilde f$`) and the icy regions (OOD relative to `$\tilde f$`). Prediction region volume-efficiency is reported as a ratio relative to a linear-Gaussian oracle with access to the unknown ground-truth dynamics.
 
 <div class="result-table-wrap">
 <table class="result-table">

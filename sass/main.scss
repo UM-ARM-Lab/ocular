@@ -400,8 +400,11 @@ body {
 
 .inference-video-stage {
     width: 100%;
+    box-sizing: border-box;
     overflow: hidden;
     line-height: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
     background: var(--color-light);
 }
 
