@@ -1,7 +1,7 @@
 +++
 title = "Local Conformal Calibration of Dynamics Uncertainty from Semantic Images"
 [extra]
-display_title = "Local Conformal Calibration of Dynamics Uncertainty from Semantic Images "
+display_title = "Local Conformal Calibration of Dynamics Uncertainty from Semantic Images"
 authors = [
     {name = "Luís Marques", url = "https://marquesluis.com/"},
     {name = "Dmitry Berenson", url = "https://berenson.robotics.umich.edu/"}
@@ -20,49 +20,165 @@ favicon = true
 
 
 <section class="ocular-hero" aria-label="SplitCP and OCULAR rollout comparison">
-<p class="ocular-hero-caption">(Left) SplitCP performs a global calibration of dynamics uncertainty. (Right) <strong>OCULAR</strong> calibrates the approximate dynamics model conditioned on velocity, action, and observation, and does not require data from the test-time environment.</p>
+<p class="ocular-hero-caption">(Left) SplitCP performs a global calibration of dynamics uncertainty, possibly resulting in overconfident and/or overconservative motion. (Right) <strong>OCULAR</strong> calibrates the approximate dynamics model conditioned on velocity, action, and observation, and does not require data from the test-time environment.</p>
 <video autoplay muted loop controls playsinline preload="metadata" poster="./hero_videos/ocular_splitcp_ours_hero_maps.jpg">
     <source src="./hero_videos/ocular_splitcp_ours_hero_maps.mp4" type="video/mp4">
 </video>
 </section>
 
 <section class="capture-abstract" aria-label="Abstract">
-<p><span class="capture-run-in-heading">Abstract</span> We introduce <strong>O</strong>bservation-aware <strong>C</strong>onformal <strong>U</strong>ncertainty <strong>L</strong>ocal-C<strong>a</strong>lib<strong>r</strong>ation (<strong>OCULAR</strong>), a conformal prediction-based algorithm that uses perception information to provide <em>uncertainty quantification guarantees</em> for <em>unseen</em> test-time environments. While previous conformal approaches lack the ability to discriminate between state-action space regions leading to higher or lower model mismatch, and require environment-specific data, our method uses data collected from visually similar environments to provably calibrate a given linear Gaussian dynamics model of arbitrary fidelity. The prediction regions generated from <strong>OCULAR</strong> are guaranteed to contain the future system states with, at least, a user-set likelihood, despite both aleatoric and epistemic uncertainty. Our guarantees are non-asymptotic and <em>distribution-free</em>, not requiring strong assumptions about the <em>unknown</em> real system dynamics. Our calibration procedure enables distinguishing between observation-velocity-action inputs leading to higher and lower next-state uncertainty, which is helpful for probabilistically-safe planning. We validate our algorithm on a double-integrator system subject to random perturbations and significant model mismatch, using both a simplified sensor and a more realistic simulated camera. Our approach appropriately quantifies uncertainty both when in-distribution and out-of-distribution, while being comparatively <em>volume-efficient</em> to baselines requiring environment-specific data.</p>
+<p><span class="capture-run-in-heading">Abstract</span> We introduce <strong>O</strong>bservation-aware <strong>C</strong>onformal <strong>U</strong>ncertainty <strong>L</strong>ocal-C<strong>a</strong>lib<strong>r</strong>ation (<strong>OCULAR</strong>), a conformal prediction-based algorithm that uses perception information to provide <em>uncertainty quantification guarantees</em> for <em>unseen</em> test-time environments. While previous conformal approaches lack the ability to discriminate between state-action space regions leading to higher or lower model mismatch, and require environment-specific data, our method uses data collected from visually similar environments to provably calibrate a given linear Gaussian dynamics model of arbitrary fidelity. The prediction regions generated from <strong>OCULAR</strong> are guaranteed to contain future system states with at least a user-set likelihood, despite both aleatoric and epistemic uncertainty. Our guarantees are non-asymptotic and <em>distribution-free</em>, not requiring strong assumptions about the <em>unknown</em> real system dynamics. Our calibration procedure enables distinguishing between observation-velocity-action inputs leading to higher and lower next-state uncertainty, which is helpful for probabilistically safe planning. We validate our algorithm on a double-integrator system subject to random perturbations and significant model mismatch, using both a simplified sensor and a more realistic simulated camera. Our approach appropriately quantifies uncertainty both when in-distribution and out-of-distribution, while being comparatively <em>volume-efficient</em> to baselines requiring environment-specific data.</p>
 </section>
 
 # Problem Statement
 
-Let `$s_t=(p_t,v_t)\in\mathcal S$` and `$a_t\in\mathcal A$` denote a robot's state and action. We consider discrete-time stochastic systems evolving according to unknown dynamics `$s_{t+1}\sim f(s_t,a_t)$`, while the robot observes depth and semantic images `$o_t=(o_t^{\mathrm{depth}},o_t^{\mathrm{semantics}})$`. The planner uses a fixed approximate probabilistic dynamics model `$\tilde f$` of arbitrary fidelity; here, `$\tilde f$` is a linear Gaussian model whose uncertainty can be uncalibrated due to aleatoric disturbances and epistemic model mismatch.
+Let `$s_t=(p_t,v_t)\in\mathcal S$`, `$a_t\in\mathcal A$`, and `$o_t$` denote a robot's state, action, and observation, respectively. We consider stochastic systems evolving according to the *unknown* dynamics `$s_{t+1}\sim f(s_t,a_t)$`. The available approximate dynamics model `$\tilde f$` has arbitrary fidelity, with uncertainty arising from both external disturbances and model mismatch. In our experiments, `$\tilde f$` is a linear-Gaussian model.
 
-Given a finite exchangeable calibration dataset `$D_{\mathrm{cal}}:=\{(s_t,a_t,o_t,s_{t+1})_i\}_{i=1}^{n}$` from environments different from, but visually similar to, the deployment environment, our aim is to construct an adaptive and volume-efficient prediction region `$\hat{\mathcal C}(X)$` over `$Y:=s_{t+1}$`. For a user-selected acceptable failure rate `$\alpha\in(0,1)$`, **OCULAR** calibrates `$\tilde f$` without test-environment calibration data so that
+Given access to an exchangeable calibration dataset of robot transitions `$D_{\mathrm{cal}}:=\{(s_t,a_t,o_t,s_{t+1})_i\}_{i=1}^{n}$`, collected in environments that are different from but visually similar to the deployment environment, our aim is to construct a state-action-observation-dependent and volume-efficient prediction region `$\hat{\mathcal C}\subseteq \mathcal S$` that is guaranteed to contain the *unknown* future system state `$s_{t+1}$` with at least a user-selected likelihood `$1-\alpha \in(0,1)$`, i.e., achieve
 ```
 $$
-\mathbb P\!\left(Y \in \hat{\mathcal C}(X)\right) \ge 1-\alpha.
+\mathbb P\!\left(s_{t+1} \in \hat{\mathcal C}\right) \ge 1-\alpha.
 $$
 ```
+ **OCULAR** calibrates the approximate model `$\tilde f$` to construct `$\hat{\mathcal C}$` *without requiring data from the test-time environment*.
 
 # Method: OCULAR
 
-**OCULAR** performs local conformal calibration using robot-frame perception, body velocity, and action information. It projects each observation into a planar semantic footprint `$o'_t=\varphi(o_t)$`, encodes that footprint with a CAE, and partitions `$X:=\mathrm{process}(X^{\mathrm{raw}})=(v_t,a_t,\mathrm{Encode}(o'_t))$` using a DTree trained on nonconformity scores. SplitCP is performed per leaf, yielding an input-dependent threshold `$\hat q_k$` and covariance scaling factor `$\xi_k$` for the approximate Gaussian prediction.
+**OCULAR** performs local conformal calibration using robot-frame perception, body velocity, and action information. It projects each observation into a planar semantic footprint `$o'_t=\varphi(o_t)$`, encodes that footprint with a CAE, and partitions the velocity-action-encoded observation space `$X:=\mathrm{process}(X^{\mathrm{raw}})=(v_t,a_t,\mathrm{Encode}(o'_t))$` using a Regression Decision Tree fitted on nonconformity scores. SplitCP is then performed per DTree leaf, resulting in an input-dependent score threshold `$\hat q_k$` and approximate covariance scaling factor `$\xi_k$`.
 
 {% figure(alt=["OCULAR offline calibration pipeline"] src=["./offline_diagram_v2.png"] dark_src=["./offline_diagram_v2_dark.png"]) %}
-**Offline component of OCULAR.** 1: observations `$o_i$` from `$D_{cal}^{part}$` are projected into planar footprints `$O_i$` by `$p(\cdot)$`. A CAE is trained to reconstruct `$O_i$`, and the decoder is discarded. 2: All data in `$D_{cal}$` is processed by `$\mathrm{process}(\cdot)$` into a learned representation `$X_i$`, and nonconformity scores `$s_i$` are computed. 3: a Decision Tree is trained on `$D_{cal}^{part}$` to partition the learned input space `$\mathcal{X}$` into regions of approximately constant score. 4: The holdout processed `$D_{cal}^{CP}$` data is fed through the DTree and scores are grouped per leaf node `$k$`. SplitCP is performed on each input-space partition `$\mathcal{X}_k$` to get an input-dependent probabilistic threshold `$\hat{q}_k$`.
+**Offline component of OCULAR.** 1: observations `$o_t$` from `$D_{\mathrm{cal}}^{\mathrm{part}}$` are projected into a planar footprint `$o'_t$` by `$\varphi$`. A CAE is trained to reconstruct `$o'_t$`, and the decoder is discarded. 2: All data in `$D_{\mathrm{cal}}$` is processed by `$\mathrm{process}(\cdot)$` into a learned representation `$X_i$`, and nonconformity scores `$R_i$` are computed. 3: a Decision Tree is trained on `$D_{\mathrm{cal}}^{\mathrm{part}}$` to partition the learned input space `$\mathcal{X}$` into regions of approximately constant score. 4: The holdout processed `$D_{\mathrm{cal}}^{\mathrm{CP}}$` data is fed through the DTree and scores are grouped per leaf node `$k$`. SplitCP is performed on each input-space partition `$\mathcal{X}_k$` to get an input-dependent probabilistic threshold `$\hat{q}_k$`.
 {% end %}
 
 {% figure(alt=["OCULAR online uncertainty calibration pipeline"] src=["./online_diagram_v2.png"] dark_src=["./online_diagram_v2_dark.png"]) %}
-**Online component of OCULAR.** Given an estimated Gaussian at time `$t$`, a desired action `$a_t$`, and observation `$o_t$`, we create an approximate next-step Gaussian `$\tilde{\mathcal N}_{t+1}$` via the approximate model `$\tilde{f}$`. The current-time information `$X_i^{raw}$` is processed, and the learned representation `$X_i$` passed to the Decision Tree. The resulting leaf node `$\mathcal{X}_k$` has an associated `$\hat{q}_k$`, which is multiplied by a fixed constant to get `$\xi_k$`. The approximate uncertainty estimate is then calibrated by scaling its covariance by `$\xi_k$`, and the output is passed to the following planning step.
+**Online component of OCULAR.** Given an estimated Gaussian at time `$t$`, a desired action `$a_t$`, and observation `$o_t$`, we create an approximate next-step Gaussian `$\tilde{\mathcal N}_{t+1}$` via the approximate model `$\tilde f$`. The current-time information `$X_i^{\mathrm{raw}}$` is processed, and the learned representation `$X_i$` is passed to the Decision Tree. The resulting leaf node `$\mathcal{X}_k$` has an associated `$\hat{q}_k$`, which is multiplied by a fixed constant to get `$\xi_k$`. The approximate uncertainty estimate is then calibrated by scaling its covariance by `$\xi_k$`, and the output is passed to the following planning step.
 {% end %}
 
 # Experiments
-We validate **OCULAR** on a double-integrator in Isaac Sim using depth and semantic segmentation cameras across three snowy T-section environments. The white lower-friction regions are OOD relative to the linear Gaussian model; **OCULAR** uses calibration data from visually similar maps other than the tested map.
+We validate **OCULAR** on a double-integrator in Isaac Sim using a floating camera that provides depth and semantic segmentation across three snowy T-junction environments. The white lower-friction regions are OOD relative to the linear-Gaussian model, which captures the system dynamics over the asphalt road. **OCULAR** uses no calibration data from the test map (e.g., for icyMain evaluation, we use data collected in icyMiddle and icySide).
 
 <div class="carousel-title">
-<p>The three tested Isaac Sim environments (based off Rivermark).</p>
+<p>The three tested Isaac Sim environments, based on Rivermark.</p>
 </div>
 
 {{ figure(alt=["Isaac Sim icy main map flyover", "Isaac Sim icy middle map flyover", "Isaac Sim icy side map flyover"] labels=["icyMain", "icyMiddle", "icySide"] src=["./flyover_map_videos/rivermark_Tsection_icyMain_flyover_maponly_2560x1440_24fps_web_crf32.mp4", "./flyover_map_videos/rivermark_Tsection_icyMiddle_flyover_maponly_2560x1440_24fps_web_crf32.mp4", "./flyover_map_videos/rivermark_Tsection_icySide_flyover_maponly_2560x1440_24fps_web_crf32.mp4"]) }}
 
-The individual rollout picker shows per-method inference visualizations for selected test episodes.
+We numerically validate the coverage of the prediction regions `$\hat{\mathcal C}\subseteq \mathcal S$` constructed by different methods using Monte Carlo propagation. Coverage is reported for the nominal road (ID relative to `$\tilde f$`) and the icy regions (OOD relative to `$\tilde f$`). Prediction region volume-efficiency is reported as a ratio relative to a linear-Gaussian oracle with access to the unknown ground-truth dynamics.
+
+<div class="result-table-wrap">
+<table class="result-table">
+    <caption>Test-case results across three Isaac Sim roads.</caption>
+    <thead>
+        <tr>
+            <th class="metric-cell" rowspan="2">Metric</th>
+            <th class="method-cell" rowspan="2">Method</th>
+            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap">not in <code>$D_{\mathrm{cal}}$</code>?</span></th>
+            <th colspan="2">icySide</th>
+            <th colspan="2">icyMain</th>
+            <th colspan="2">icyMiddle</th>
+        </tr>
+        <tr>
+            <th>ID</th>
+            <th>OOD</th>
+            <th>ID</th>
+            <th>OOD</th>
+            <th>ID</th>
+            <th>OOD</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th class="metric-cell" rowspan="4"><span class="nowrap">Marginal coverage</span><br><span class="nowrap">(%)</span></th>
+            <td class="method-cell">NoCP</td>
+            <td class="narrow-col"><span class="status neutral">N/A</span></td>
+            <td class="ok">90.0</td>
+            <td class="bad">56.7</td>
+            <td class="ok">90.0</td>
+            <td class="bad">56.7</td>
+            <td class="ok">90.0</td>
+            <td class="bad">56.7</td>
+        </tr>
+        <tr>
+            <td class="method-cell">SplitCP</td>
+            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
+            <td class="ok">99.5</td>
+            <td class="bad">89.6</td>
+            <td class="ok">100.0</td>
+            <td class="ok">98.4</td>
+            <td class="ok">99.1</td>
+            <td class="bad">85.9</td>
+        </tr>
+        <tr>
+            <td class="method-cell">LUCCa</td>
+            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
+            <td class="ok">91.1</td>
+            <td class="ok">91.5</td>
+            <td class="ok">90.1</td>
+            <td class="ok">91.4</td>
+            <td class="ok">90.1</td>
+            <td class="ok">90.9</td>
+        </tr>
+        <tr>
+            <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
+            <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
+            <td class="ok">91.5</td>
+            <td class="ok">90.1</td>
+            <td class="ok">90.4</td>
+            <td class="ok">90.1</td>
+            <td class="ok">91.1</td>
+            <td class="ok">90.6</td>
+        </tr>
+        <tr>
+            <th class="metric-cell" rowspan="4"><span class="nowrap">Median volume</span><br><span class="nowrap">(relative to oracle) &darr;</span></th>
+            <td class="method-cell">NoCP</td>
+            <td class="narrow-col"><span class="status neutral">N/A</span></td>
+            <td>1.00</td>
+            <td>0.28</td>
+            <td>1.00</td>
+            <td>0.28</td>
+            <td>1.00</td>
+            <td>0.28</td>
+        </tr>
+        <tr>
+            <td class="method-cell">SplitCP</td>
+            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
+            <td>3.73</td>
+            <td>1.03</td>
+            <td>8.68</td>
+            <td>2.40</td>
+            <td>3.07</td>
+            <td>0.85</td>
+        </tr>
+        <tr>
+            <td class="method-cell">LUCCa</td>
+            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
+            <td>1.08</td>
+            <td>1.13</td>
+            <td><strong>1.02</strong></td>
+            <td>1.10</td>
+            <td><strong>1.02</strong></td>
+            <td>1.13</td>
+        </tr>
+        <tr>
+            <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
+            <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
+            <td><strong>1.03</strong></td>
+            <td><strong>1.02</strong></td>
+            <td><strong>1.02</strong></td>
+            <td><strong>1.02</strong></td>
+            <td>1.06</td>
+            <td><strong>1.06</strong></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<p class="table-note"><span class="bad note-chip">red</span> means coverage below 90%. Each map has 4464 test transitions.</p>
+
+**OCULAR** calibrates the approximate dynamics on both nominal and icy conditions without sacrificing volume efficiency relative to baselines using environment-specific data.
+
+We also conduct motion planning experiments to demonstrate the utility of our method for probabilistically safe motion planning under model mismatch and external perturbations.
+For all methods the MPC planning cost involves a distance-to-subgoal term, a collision penalty and a penalty for transitions with high estimated uncertainty.
 
 <div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260604-rerender">
     <div class="inference-picker-controls">
@@ -104,6 +220,8 @@ The individual rollout picker shows per-method inference visualizations for sele
     <div class="inference-video-stage" data-video-stage></div>
     <p class="inference-video-note" data-video-note hidden>Video for this map/episode/method is not available yet.</p>
 </div>
+
+We observe that using the uncalibrated dynamics directly leads to gaining too much momentum over ice and collisions. SplitCP can lead to overconfident (i.e., collisions) or overconservative (i.e., timeouts) behavior depending on the calibration data distribution. LUCCa is a baseline requiring robot positional data in the map frame and hence transitions collected in the test environment. **OCULAR** moves more slowly over ice and faster over the nominal road, without test-environment data, being both safe and efficient. Below we visualize rollouts from all compared methods at once.
 
 <div class="inference-video-panel" data-video-picker data-video-template="./six_method_comparison/{map}_episode_{episode}_methods_grid_3840x1440_candidate_web_crf32.mp4">
     <div class="inference-picker-controls">
@@ -266,127 +384,15 @@ The individual rollout picker shows per-method inference visualizations for sele
 })();
 </script>
 
-For held-out test cases, we propagate `$10k$` Monte Carlo particles under the true dynamics and report marginal coverage by ID/OOD region. Relative volume is measured against an oracle Gaussian scaling that achieves `$90\%$` coverage.
+These results indicate that **OCULAR** can generalize to new unseen environments and achieve both adequate planning performance and safety by leveraging perception information obtained in other environments. Below are numerical results.
 
 <div class="result-table-wrap">
 <table class="result-table">
-    <caption>Test-case results across three Isaac Sim roads.</caption>
-    <thead>
-        <tr>
-            <th class="metric-cell" rowspan="2">Metric</th>
-            <th class="method-cell" rowspan="2">Method</th>
-            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap">not in <code>$D_{cal}$</code>?</span></th>
-            <th colspan="2">icySide</th>
-            <th colspan="2">icyMain</th>
-            <th colspan="2">icyMiddle</th>
-        </tr>
-        <tr>
-            <th>ID</th>
-            <th>OOD</th>
-            <th>ID</th>
-            <th>OOD</th>
-            <th>ID</th>
-            <th>OOD</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th class="metric-cell" rowspan="4"><span class="nowrap">Marginal coverage</span><br><span class="nowrap">(%)</span></th>
-            <td class="method-cell">No CP</td>
-            <td class="narrow-col"><span class="status neutral">N/A</span></td>
-            <td class="ok">90.0</td>
-            <td class="bad">56.7</td>
-            <td class="ok">90.0</td>
-            <td class="bad">56.7</td>
-            <td class="ok">90.0</td>
-            <td class="bad">56.7</td>
-        </tr>
-        <tr>
-            <td class="method-cell">SplitCP</td>
-            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
-            <td class="ok">99.5</td>
-            <td class="bad">89.6</td>
-            <td class="ok">100.0</td>
-            <td class="ok">98.4</td>
-            <td class="ok">99.1</td>
-            <td class="bad">85.9</td>
-        </tr>
-        <tr>
-            <td class="method-cell">LUCCa</td>
-            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
-            <td class="ok">91.1</td>
-            <td class="ok">91.5</td>
-            <td class="ok">90.1</td>
-            <td class="ok">91.4</td>
-            <td class="ok">90.1</td>
-            <td class="ok">90.9</td>
-        </tr>
-        <tr>
-            <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
-            <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
-            <td class="ok">91.5</td>
-            <td class="ok">90.1</td>
-            <td class="ok">90.4</td>
-            <td class="ok">90.1</td>
-            <td class="ok">91.1</td>
-            <td class="ok">90.6</td>
-        </tr>
-        <tr>
-            <th class="metric-cell" rowspan="4"><span class="nowrap">Median volume</span><br><span class="nowrap">(relative to oracle) &darr;</span></th>
-            <td class="method-cell">No CP</td>
-            <td class="narrow-col"><span class="status neutral">N/A</span></td>
-            <td>1.00</td>
-            <td>0.28</td>
-            <td>1.00</td>
-            <td>0.28</td>
-            <td>1.00</td>
-            <td>0.28</td>
-        </tr>
-        <tr>
-            <td class="method-cell">SplitCP</td>
-            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
-            <td>3.73</td>
-            <td>1.03</td>
-            <td>8.68</td>
-            <td>2.40</td>
-            <td>3.07</td>
-            <td>0.85</td>
-        </tr>
-        <tr>
-            <td class="method-cell">LUCCa</td>
-            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
-            <td>1.08</td>
-            <td>1.13</td>
-            <td><strong>1.02</strong></td>
-            <td>1.10</td>
-            <td><strong>1.02</strong></td>
-            <td>1.13</td>
-        </tr>
-        <tr>
-            <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
-            <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
-            <td><strong>1.03</strong></td>
-            <td><strong>1.02</strong></td>
-            <td><strong>1.02</strong></td>
-            <td><strong>1.02</strong></td>
-            <td>1.06</td>
-            <td><strong>1.06</strong></td>
-        </tr>
-    </tbody>
-</table>
-</div>
-
-<p class="table-note"><span class="bad note-chip">red</span> means coverage below 90%. Each map has 4464 test transitions.</p>
-
-We run 30 planning trials on each Isaac Sim map. Success means reaching all subgoals without collisions; failures were collisions rather than timeouts.
-
-<div class="result-table-wrap">
-<table class="result-table">
-    <caption>Planning results across three Isaac Sim roads.</caption>
+    <caption>Planning results across three Isaac Sim roads (30 trials each).</caption>
     <thead>
         <tr>
             <th class="method-cell" rowspan="2">Method</th>
-            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap">not in <code>$D_{cal}$</code>?</span></th>
+            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap">not in <code>$D_{\mathrm{cal}}$</code>?</span></th>
             <th colspan="3">Success (%) &uarr;</th>
             <th colspan="3">Steps to completion (mean &plusmn; std) &darr;</th>
         </tr>
@@ -401,7 +407,7 @@ We run 30 planning trials on each Isaac Sim map. Success means reaching all subg
     </thead>
     <tbody>
         <tr>
-            <td class="method-cell">No CP</td>
+            <td class="method-cell">NoCP</td>
             <td class="narrow-col"><span class="status neutral">N/A</span></td>
             <td>0</td>
             <td>0</td>
@@ -443,6 +449,8 @@ We run 30 planning trials on each Isaac Sim map. Success means reaching all subg
     </tbody>
 </table>
 </div>
+
+<p class="table-note">Success = reaching all subgoals without collisions.</p>
 
 # BibTeX <small><small>(cite this!)</small></small>
 
