@@ -20,7 +20,7 @@ favicon = true
 
 
 <section class="ocular-hero" aria-label="SplitCP and OCULAR rollout comparison">
-<p class="ocular-hero-caption">(Left) SplitCP calibrates dynamics uncertainty <em>globally</em>, possibly resulting in overconfident and/or overconservative motion. (Right) <strong>OCULAR</strong> calibrates the approximate dynamics model conditioned on velocity, action, and observation, and does not require data from the test-time environment.</p>
+<p class="ocular-hero-caption">(Left) SplitCP calibrates dynamics uncertainty <em>globally</em>, possibly resulting in overconfident and/or overconservative motion. (Right) <strong>OCULAR</strong> calibrates dynamics uncertainty conditioned on velocity, action, and observation, and does not require data from the test-time environment.</p>
 <video autoplay muted loop controls playsinline preload="metadata" poster="./hero_videos/ocular_splitcp_ours_hero_maps.jpg">
     <source src="./hero_videos/ocular_splitcp_ours_hero_maps.mp4" type="video/mp4">
 </video>
@@ -32,19 +32,19 @@ favicon = true
 
 # Problem Statement
 
-Let `$s_t=(p_t,v_t)\in\mathcal S$`, `$a_t\in\mathcal A$`, and `$o_t$` denote a robot's state, action, and observation, respectively. We consider stochastic systems evolving according to the *unknown* dynamics `$s_{t+1}\sim f(s_t,a_t)$`. The available approximate dynamics model `$\tilde f$` has arbitrary fidelity, with uncertainty arising from both external disturbances and model mismatch. In our experiments, `$\tilde f$` is a linear-Gaussian model.
+Let `$s_t:=(p_t,v_t)$`, `$a_t$`, and `$o_t$` denote a robot's state, action, and observation, respectively. We consider stochastic systems evolving according to the *unknown* dynamics `$s_{t+1}\sim f(s_t,a_t)$`. The available approximate dynamics model `$\tilde f$` has arbitrary fidelity, with uncertainty arising from both external disturbances and model mismatch. In our experiments, `$\tilde f$` is a linear-Gaussian model.
 
-Given access to an exchangeable calibration dataset of robot transitions `$D_{\mathrm{cal}}:=\{(s_t,a_t,o_t,s_{t+1})_i\}_{i=1}^{n}$`, collected in environments that are different from but visually similar to the deployment environment, our aim is to construct a state-action-observation-dependent and volume-efficient prediction region `$\hat{\mathcal C}\subseteq \mathcal S$` that is guaranteed to contain the *unknown* future system state `$s_{t+1}$` with at least a user-selected likelihood `$1-\alpha \in(0,1)$`, i.e., achieve
+Given access to an exchangeable dataset of robot transitions `$D_{\mathrm{cal}}:=\{(s_t,a_t,o_t,s_{t+1})_i\}_{i=1}^{n}$`, collected in environments that are different from but visually similar to the deployment environment, our goal is to construct a state-action-observation-dependent and volume-efficient prediction region `$\hat{\mathcal C}\subseteq \mathcal S$` that is guaranteed to contain the *unknown* future system state `$s_{t+1}$` with at least a user-selected likelihood `$1-\alpha \in(0,1)$`, i.e., satisfy
 ```
 $$
 \mathbb P\!\left(s_{t+1} \in \hat{\mathcal C}\right) \ge 1-\alpha.
 $$
 ```
- **OCULAR** calibrates the approximate model `$\tilde f$` to construct `$\hat{\mathcal C}$` *without requiring data from the test-time environment*.
+**OCULAR** *calibrates* the approximate dynamics model `$\tilde f$` to construct the prediction set `$\hat{\mathcal C}$` *without requiring data from the test-time environment*.
 
 # Method: OCULAR
 
-**OCULAR** performs local conformal calibration using robot-frame perception, body velocity, and action information. It projects each observation into a planar semantic footprint `$o'_t=\varphi(o_t)$`, encodes that footprint with a CAE, and partitions the velocity-action-encoded observation space `$X:=\mathrm{process}(X^{\mathrm{raw}})=(v_t,a_t,\mathrm{Encode}(o'_t))$` using a Regression Decision Tree fitted on nonconformity scores. SplitCP is then performed per DTree leaf, resulting in an input-dependent score threshold `$\hat q_k$` and approximate covariance scaling factor `$\xi_k$`.
+**OCULAR** performs local conformal calibration using robot-frame perception, body velocity, and action information. It projects each observation into a planar semantic footprint `$o'_t=\varphi(o_t)$`, encodes that footprint with a CAE, and partitions the velocity-action-latent space `$X:=\mathrm{process}(X^{\mathrm{raw}})=(v_t,a_t,\mathrm{Encode}(o'_t))$` using a Regression Decision Tree fitted on nonconformity scores. SplitCP is then performed per Decision Tree leaf, resulting in an input-dependent score threshold `$\hat q_k\in \mathbb R$`, which acts as a probabilistic upper bound on prediction uncertainty.
 
 {% figure(alt=["OCULAR offline calibration pipeline"] src=["./offline_diagram_v2.png"] dark_src=["./offline_diagram_v2_dark.png"]) %}
 **Offline component of OCULAR.** 1: observations `$o_t$` from `$D_{\mathrm{cal}}^{\mathrm{part}}$` are projected into a planar footprint `$o'_t$` by `$\varphi$`. A CAE is trained to reconstruct `$o'_t$`, and the decoder is discarded. 2: All data in `$D_{\mathrm{cal}}$` is processed by `$\mathrm{process}(\cdot)$` into a learned representation `$X_i$`, and nonconformity scores `$R_i$` are computed. 3: a Decision Tree is trained on `$D_{\mathrm{cal}}^{\mathrm{part}}$` to partition the learned input space `$\mathcal{X}$` into regions of approximately constant score. 4: The holdout processed `$D_{\mathrm{cal}}^{\mathrm{CP}}$` data is fed through the DTree and scores are grouped per leaf node `$k$`. SplitCP is performed on each input-space partition `$\mathcal{X}_k$` to get an input-dependent probabilistic threshold `$\hat{q}_k$`.
@@ -55,7 +55,7 @@ $$
 {% end %}
 
 # Experiments
-We validate **OCULAR** on a double-integrator in Isaac Sim using a floating camera that provides depth and semantic segmentation across three snowy T-junction environments. The white lower-friction regions are OOD relative to the linear-Gaussian model, which captures the system dynamics over the asphalt road. **OCULAR** uses no calibration data from the test map (e.g., for icyMain evaluation, we use data collected in icyMiddle and icySide).
+We validate **OCULAR** on a double-integrator in Isaac Sim using a floating camera providing depth and semantic segmentation images. We evaluate across three snowy T-junction environments. The white lower-friction regions are out-of-distribution (OOD) relative to the approximate linear-Gaussian model `$\tilde{f}$`, which captures the robot dynamics over the asphalt road (ID). In all experiments, **OCULAR** uses no data from the test map (e.g., for icyMain evaluation, we use system transition data collected in icyMiddle and icySide).
 
 <div class="carousel-title">
 <p>The three tested Isaac Sim environments, based on Rivermark.</p>
@@ -63,7 +63,7 @@ We validate **OCULAR** on a double-integrator in Isaac Sim using a floating came
 
 {{ figure(alt=["Isaac Sim icy main map flyover", "Isaac Sim icy middle map flyover", "Isaac Sim icy side map flyover"] labels=["icyMain", "icyMiddle", "icySide"] src=["./flyover_map_videos/rivermark_Tsection_icyMain_flyover_maponly_2560x1440_24fps_web_crf32.mp4", "./flyover_map_videos/rivermark_Tsection_icyMiddle_flyover_maponly_2560x1440_24fps_web_crf32.mp4", "./flyover_map_videos/rivermark_Tsection_icySide_flyover_maponly_2560x1440_24fps_web_crf32.mp4"]) }}
 
-We numerically validate the coverage of the prediction regions `$\hat{\mathcal C}\subseteq \mathcal S$` constructed by different methods using Monte Carlo propagation. Coverage is reported for the nominal road (ID relative to `$\tilde f$`) and the icy regions (OOD relative to `$\tilde f$`). Prediction region volume-efficiency is reported as a ratio relative to a linear-Gaussian oracle with access to the unknown ground-truth dynamics.
+Using Monte Carlo propagation, we numerically estimate how likely the prediction regions `$\hat{\mathcal C}\subseteq \mathcal S$` constructed by different methods are to contain the future *unknown* state `$s_{t+1}$`. This containment likelihood (i.e., coverage) is reported separately for the nominal road regions (ID relative to `$\tilde f$`) and the icy regions (OOD relative to `$\tilde f$`). Prediction region volume-efficiency is reported as a ratio relative to a linear-Gaussian oracle with access to the unknown ground-truth dynamics.
 
 <div class="result-table-wrap">
 <table class="result-table">
@@ -177,10 +177,10 @@ We numerically validate the coverage of the prediction regions `$\hat{\mathcal C
 
 **OCULAR** calibrates the approximate dynamics on both nominal and icy conditions without sacrificing volume efficiency relative to baselines using environment-specific data.
 
-We also conduct motion planning experiments to demonstrate the utility of our method for probabilistically safe motion planning under model mismatch and external perturbations.
-For all methods the MPC planning cost involves a distance-to-subgoal term, a collision penalty and a penalty for transitions with high estimated uncertainty.
+We also conduct motion planning experiments to demonstrate the utility of our method for probabilistically safe MPC under model mismatch and external perturbations.
+For all methods the objective function includes a distance-to-subgoal term, a collision penalty, and a penalty for transitions with high estimated uncertainty.
 
-<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260604-capture-style">
+<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260604-bg1f-fullrange">
     <div class="inference-picker-controls">
         <div class="inference-picker-group" aria-label="Map">
             <span class="inference-picker-label">Map</span>
@@ -221,9 +221,9 @@ For all methods the MPC planning cost involves a distance-to-subgoal term, a col
     <p class="inference-video-note" data-video-note hidden>Video for this map/episode/method is not available yet.</p>
 </div>
 
-We observe that using the uncalibrated dynamics directly leads to gaining too much momentum over ice and collisions. SplitCP can lead to overconfident (i.e., collisions) or overconservative (i.e., timeouts) behavior depending on the calibration data distribution. LUCCa is a baseline requiring robot positional data in the map frame and hence transitions collected in the test environment. **OCULAR** moves more slowly over ice and faster over the nominal road, without test-environment data, being both safe and efficient. Below we visualize rollouts from all compared methods at once.
+We observe that using the uncalibrated dynamics directly leads to gaining significant momentum over ice and hence collisions. SplitCP can produce overconfident (i.e., collisions) or overconservative (i.e., timeouts) behavior depending on the calibration data distribution. LUCCa is a baseline requiring robot location data in an inertial frame and hence needs transitions collected in the test environment. **OCULAR** moves more slowly over ice and faster over the nominal road, being both safe and efficient. By using perception information, it does *not* require data from the test environment. Below we visualize rollouts from all compared methods at once.
 
-<div class="inference-video-panel" data-video-picker data-video-template="./six_method_comparison/{map}_episode_{episode}_methods_grid_3840x1440_candidate_web_crf32.mp4?v=20260604-capture-style">
+<div class="inference-video-panel" data-video-picker data-video-template="./six_method_comparison/{map}_episode_{episode}_methods_grid_3840x1440_candidate_web_crf32.mp4?v=20260604-bg1f-fullrange">
     <div class="inference-picker-controls">
         <div class="inference-picker-group" aria-label="Map">
             <span class="inference-picker-label">Map</span>
