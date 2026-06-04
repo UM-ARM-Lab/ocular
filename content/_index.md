@@ -44,10 +44,10 @@ $$
 
 # Method: OCULAR
 
-**OCULAR** performs local conformal calibration using robot-frame perception, body velocity, and action information. It projects each observation into a planar semantic footprint `$o'_t=\varphi(o_t)$`, encodes that footprint with a CAE, and partitions the velocity-action-latent space `$X:=\mathrm{process}(X^{\mathrm{raw}})=(v_t,a_t,\mathrm{Encode}(o'_t))$` using a Regression Decision Tree fitted on nonconformity scores. SplitCP is then performed per Decision Tree leaf, resulting in an input-dependent score threshold `$\hat q_k\in \mathbb R$`, which acts as a probabilistic upper bound on prediction uncertainty.
+**OCULAR** performs local conformal calibration using robot-frame perception, body velocity, and action information. It projects each observation into a planar semantic footprint `$o'_t=\varphi(o_t)$`, encodes that footprint with a CAE, and partitions the velocity-action-latent space `$X:=\mathrm{Process}(X^{\mathrm{raw}})=(v_t,a_t,\mathrm{Encode}(o'_t))$` using a Regression Decision Tree fitted on scores. SplitCP is then performed per Decision Tree leaf, resulting in an input-dependent score threshold `$\hat q_k\in \mathbb R$`, which acts as a *local* probabilistic upper bound on motion uncertainty.
 
 {% figure(alt=["OCULAR offline calibration pipeline"] src=["./offline_diagram_v2.png"] dark_src=["./offline_diagram_v2_dark.png"]) %}
-**Offline component of OCULAR.** 1: observations `$o_t$` from `$D_{\mathrm{cal}}^{\mathrm{part}}$` are projected into a planar footprint `$o'_t$` by `$\varphi$`. A CAE is trained to reconstruct `$o'_t$`, and the decoder is discarded. 2: All data in `$D_{\mathrm{cal}}$` is processed by `$\mathrm{process}(\cdot)$` into a learned representation `$X_i$`, and nonconformity scores `$R_i$` are computed. 3: a Decision Tree is trained on `$D_{\mathrm{cal}}^{\mathrm{part}}$` to partition the learned input space `$\mathcal{X}$` into regions of approximately constant score. 4: The holdout processed `$D_{\mathrm{cal}}^{\mathrm{CP}}$` data is fed through the DTree and scores are grouped per leaf node `$k$`. SplitCP is performed on each input-space partition `$\mathcal{X}_k$` to get an input-dependent probabilistic threshold `$\hat{q}_k$`.
+**Offline component of OCULAR.** 1: observations `$o_t$` from `$D_{\mathrm{cal}}^{\mathrm{part}}$` are projected into a planar footprint `$o'_t$` by `$\varphi$`. A CAE is trained to reconstruct `$o'_t$`, and the decoder is discarded. 2: All data in `$D_{\mathrm{cal}}$` is processed by `$\mathrm{Process}()$` into a learned representation `$X_i$`, and scores `$R_i := r(s_{t+1,i}, \tilde{\mathcal N}_{t+1,i})$` are computed. 3: a Decision Tree is trained on `$D_{\mathrm{cal}}^{\mathrm{part}}$` to partition the learned input space `$\mathcal{X}$` into regions of approximately constant score. 4: The holdout processed `$D_{\mathrm{cal}}^{\mathrm{CP}}$` data is fed through the DTree and scores are grouped per leaf node `$k$`. SplitCP is performed on each input-space partition `$\mathcal{X}_k$` to get an input-dependent probabilistic threshold `$\hat{q}_k$`.
 {% end %}
 
 {% figure(alt=["OCULAR online uncertainty calibration pipeline"] src=["./online_diagram_v2.png"] dark_src=["./online_diagram_v2_dark.png"]) %}
@@ -180,7 +180,7 @@ Using Monte Carlo propagation, we numerically estimate how likely the prediction
 We also conduct motion planning experiments to demonstrate the utility of our method for probabilistically safe MPC under model mismatch and external perturbations.
 For all methods the objective function includes a distance-to-subgoal term, a collision penalty, and a penalty for transitions with high estimated uncertainty.
 
-<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260604-bg1f-fullrange">
+<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260604-bg2222-test">
     <div class="inference-picker-controls">
         <div class="inference-picker-group" aria-label="Map">
             <span class="inference-picker-label">Map</span>
