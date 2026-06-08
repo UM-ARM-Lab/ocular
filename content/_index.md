@@ -65,30 +65,26 @@ We validate **OCULAR** on a double-integrator in Isaac Sim using a floating came
 
 Using Monte Carlo propagation, we estimate the likelihood of the prediction regions `$\hat{\mathcal C}\subseteq \mathcal S$` containing the future *unknown* state `$s_{t+1}$`. This containment likelihood (i.e., coverage) is reported separately for the nominal road regions (ID relative to `$\tilde f$`) and the icy regions (OOD relative to `$\tilde f$`). Prediction region volume-efficiency is reported as a ratio relative to a linear-Gaussian oracle with access to the unknown ground-truth dynamics.
 
+<p class="result-table-title">Test-case results across three Isaac Sim roads.</p>
 <div class="result-table-wrap">
-<table class="result-table">
-    <caption>Test-case results across three Isaac Sim roads.</caption>
+<table class="result-table" aria-label="Test-case results across three Isaac Sim roads">
     <thead>
         <tr>
-            <th class="metric-cell" rowspan="2">Metric</th>
-            <th class="method-cell" rowspan="2">Method</th>
-            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap">not in <code>$D_{\mathrm{cal}}$</code>?</span></th>
-            <th colspan="2">icySide</th>
-            <th colspan="2">icyMain</th>
-            <th colspan="2">icyMiddle</th>
-        </tr>
-        <tr>
-            <th>ID</th>
-            <th>OOD</th>
-            <th>ID</th>
-            <th>OOD</th>
-            <th>ID</th>
-            <th>OOD</th>
+            <th class="method-cell">Method</th>
+            <th class="narrow-col"><span class="nowrap">Tested map</span><br><span class="nowrap"><span class="header-negation">not</span> in <code>$D_{\mathrm{cal}}$</code>?</span></th>
+            <th>icySide ID</th>
+            <th>icySide OOD</th>
+            <th>icyMain ID</th>
+            <th>icyMain OOD</th>
+            <th>icyMiddle ID</th>
+            <th>icyMiddle OOD</th>
         </tr>
     </thead>
     <tbody>
+        <tr class="metric-section">
+            <th colspan="8">Marginal coverage (%) <svg class="metric-arrow metric-arrow-up" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M4.5 6.5 8 3l3.5 3.5"/></svg></th>
+        </tr>
         <tr>
-            <th class="metric-cell" rowspan="4"><span class="nowrap">Marginal coverage</span><br><span class="nowrap">(%)</span></th>
             <td class="method-cell">NoCP</td>
             <td class="narrow-col"><span class="status neutral">N/A</span></td>
             <td class="ok">90.0</td>
@@ -128,8 +124,10 @@ Using Monte Carlo propagation, we estimate the likelihood of the prediction regi
             <td class="ok">91.1</td>
             <td class="ok">90.6</td>
         </tr>
+        <tr class="metric-section">
+            <th colspan="8">Median volume (relative to oracle) <svg class="metric-arrow metric-arrow-down" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10m3.5-3.5L8 13 4.5 9.5"/></svg></th>
+        </tr>
         <tr>
-            <th class="metric-cell" rowspan="4"><span class="nowrap">Median volume</span><br><span class="nowrap">(relative to oracle) &darr;</span></th>
             <td class="method-cell">NoCP</td>
             <td class="narrow-col"><span class="status neutral">N/A</span></td>
             <td>1.00</td>
@@ -173,7 +171,7 @@ Using Monte Carlo propagation, we estimate the likelihood of the prediction regi
 </table>
 </div>
 
-<p class="table-note"><span class="bad note-chip">red</span> means coverage below 90%. Each map has 4464 test transitions.</p>
+<p class="table-note"><span class="bad">red</span> means coverage below 90%. Prediction region volume ratio is reported relative to an oracle using the minimum scaling factor needed to achieve 90% coverage. Each map has 4464 test transitions.</p>
 
 **OCULAR** calibrates the approximate dynamics on both nominal and icy conditions without sacrificing volume efficiency relative to baselines using environment-specific data.
 
@@ -386,15 +384,15 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
 
 These results indicate that **OCULAR** can generalize to new unseen environments and achieve both adequate planning performance and safety by leveraging perception information obtained in other environments. Below are numerical results.
 
+<p class="result-table-title">Planning results across three Isaac Sim roads (30 trials each).</p>
 <div class="result-table-wrap">
-<table class="result-table">
-    <caption>Planning results across three Isaac Sim roads (30 trials each).</caption>
+<table class="result-table" aria-label="Planning results across three Isaac Sim roads, 30 trials each">
     <thead>
         <tr>
             <th class="method-cell" rowspan="2">Method</th>
-            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap">not in <code>$D_{\mathrm{cal}}$</code>?</span></th>
-            <th colspan="3">Success (%) &uarr;</th>
-            <th colspan="3">Steps to completion (mean &plusmn; std) &darr;</th>
+            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap"><span class="header-negation">not</span> in <code>$D_{\mathrm{cal}}$</code>?</span></th>
+            <th colspan="3">Success (%) <svg class="metric-arrow metric-arrow-up" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M4.5 6.5 8 3l3.5 3.5"/></svg></th>
+            <th colspan="3">Steps to completion (mean &plusmn; std) <svg class="metric-arrow metric-arrow-down" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10m3.5-3.5L8 13 4.5 9.5"/></svg></th>
         </tr>
         <tr>
             <th>icySide</th>

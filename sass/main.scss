@@ -433,40 +433,70 @@ body {
     line-height: 1.45;
 }
 
+.result-table-title {
+    margin: 2.1rem 0 0.55rem;
+    color: var(--color-text);
+    font-size: 1.12rem;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: left;
+}
+
 .result-table-wrap {
-    margin: 1.5rem 0;
+    margin: 0 0 0.65rem;
     overflow-x: auto;
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
+    border-top: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-radius: 0;
 }
 
 .result-table {
     width: 100%;
-    min-width: 860px;
+    min-width: 1040px;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    font-size: 1.12rem;
     line-height: 1.35;
-}
-
-.result-table caption {
-    caption-side: top;
-    padding: 0.65rem 0.8rem;
-    text-align: left;
-    font-weight: 600;
-    background: var(--color-light);
 }
 
 .result-table th,
 .result-table td {
-    padding: 0.45rem 0.55rem;
-    border: 1px solid var(--color-border);
+    padding: 0.58rem 0.66rem;
+    border: 0;
+    border-bottom: 1px solid #333333;
     text-align: center;
     vertical-align: middle;
 }
 
 .result-table th {
-    background: var(--color-light);
+    color: var(--color-text);
+    background: transparent;
     font-weight: 600;
+}
+
+.result-table thead th {
+    border-bottom-color: #333333;
+    font-size: inherit;
+    letter-spacing: 0;
+}
+
+.result-table thead tr:first-child th {
+    padding-top: 0.72rem;
+    padding-bottom: 0.7rem;
+}
+
+.result-table thead tr:last-child th {
+    padding-top: 0.5rem;
+    padding-bottom: 0.65rem;
+    color: var(--color-text);
+}
+
+.result-table thead tr:only-child th {
+    padding-top: 0.72rem;
+    padding-bottom: 0.55rem;
+}
+
+.result-table tbody tr:last-child td {
+    border-bottom: 0;
 }
 
 .result-table .method-cell {
@@ -488,8 +518,46 @@ body {
     white-space: nowrap;
 }
 
+.header-negation {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
 .result-table thead th.method-cell {
-    text-align: center;
+    text-align: left;
+}
+
+.result-table .metric-section th {
+    padding: 0.95rem 0.62rem 0.3rem;
+    border-bottom: 0;
+    color: var(--color-primary);
+    font-size: inherit;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.result-table .metric-section + tr td {
+    border-top: 1px solid #333333;
+}
+
+.metric-arrow {
+    display: inline-block;
+    width: 0.82em;
+    height: 0.82em;
+    margin-left: 0.18em;
+    color: var(--color-primary);
+    overflow: visible;
+    vertical-align: -0.08em;
+}
+
+.metric-arrow path {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
 }
 
 .result-table .narrow-col {
@@ -505,58 +573,56 @@ body {
     text-align: center;
     white-space: normal;
     line-height: 1.2;
-    font-size: 0.9rem;
+    font-size: inherit;
 }
 
 .result-table .ok {
-    background: rgba(61, 140, 64, 0.18);
+    color: #4fbf7a;
+    font-weight: 600;
+    background: transparent;
 }
 
-.result-table .bad,
+.result-table .bad {
+    color: #ff4d4d;
+    font-weight: 600;
+    background: transparent;
+}
+
 .table-note .bad {
-    background: rgba(196, 55, 55, 0.2);
+    color: #ff4d4d;
 }
 
 .table-note {
-    margin-top: -0.7rem;
-    font-size: 0.9rem;
-}
-
-.note-chip {
-    display: inline-block;
-    padding: 0.05rem 0.35rem;
-    border-radius: 0.25rem;
+    margin: 0.35rem 0 2.25rem;
+    color: var(--color-text);
+    font-size: 1.05rem;
 }
 
 .status {
     display: inline-grid;
     place-items: center;
-    width: 1.7rem;
-    height: 1.7rem;
+    width: 1.35rem;
+    height: 1.35rem;
     border-radius: 999px;
-    font-weight: 900;
-    line-height: 0.75;
+    font-weight: 800;
+    line-height: 1;
     vertical-align: middle;
 }
 
 .status.check {
-    color: #0f7a35;
-    font-size: 1.45rem;
-    -webkit-text-stroke: 0.025em currentColor;
-    text-shadow: 0 0 0 currentColor;
+    color: #4fbf7a;
+    font-size: 1.12rem;
 }
 
 .status.cross {
-    color: #b3261e;
-    font-size: 1.65rem;
-    -webkit-text-stroke: 0.02em currentColor;
-    text-shadow: 0 0 0 currentColor;
+    color: #ff4d4d;
+    font-size: 1.18rem;
 }
 
 .status.neutral {
     width: auto;
     height: auto;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     color: var(--color-text);
     font-weight: 600;
     line-height: 1;
@@ -688,6 +754,6 @@ body {
     }
 
     .result-table {
-        font-size: 0.84rem;
+        font-size: 0.95rem;
     }
 }
