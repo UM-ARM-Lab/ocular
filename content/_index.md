@@ -180,7 +180,7 @@ Using Monte Carlo propagation, we estimate the likelihood of the prediction regi
 We also conduct motion planning experiments to demonstrate the utility of our method for probabilistically safe MPC under model mismatch and external perturbations.
 For all methods the objective function includes a distance-to-subgoal term, a collision penalty, and a penalty for transitions with high estimated uncertainty.
 
-<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260608-noencode-align">
+<div class="inference-video-panel" data-video-picker data-video-template="./pointcamera_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260608-noencode-method-row">
     <div class="inference-picker-controls">
         <div class="inference-picker-group" aria-label="Map">
             <span class="inference-picker-label">Map</span>
