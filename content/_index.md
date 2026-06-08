@@ -223,7 +223,7 @@ For all methods the objective function includes a distance-to-subgoal term, a co
 
 We observe that using the uncalibrated dynamics directly leads to gaining significant momentum over ice and hence collisions. SplitCP can produce overconfident (i.e., collisions) or overconservative (i.e., timeouts) behavior depending on the calibration data distribution. LUCCa is a baseline requiring robot location data in an inertial frame and hence needs transitions collected in the test environment. **OCULAR** moves more slowly over ice and faster over the nominal road, being both safe and efficient. By using perception information, it does *not* require data from the test environment. Below we visualize rollouts from all compared methods at once.
 
-<div class="inference-video-panel inference-comparison-panel" data-video-picker data-video-template="./six_method_comparison/{map}_episode_{episode}_methods_grid_3840x1440_candidate_web_crf32.mp4?v=20260608-black-batch">
+<div class="inference-video-panel inference-comparison-panel" data-video-picker data-video-template="./six_method_comparison/rivermark_Tsection_{map}_episode_{episode}_flyover_methods_grid_3840x1440_o3dyn_trimmed_fixedtrail_interp5_web_crf32.mp4?v=20260608-flyover-fullbatch">
     <div class="inference-picker-controls">
         <div class="inference-picker-group" aria-label="Map">
             <span class="inference-picker-label">Map</span>
