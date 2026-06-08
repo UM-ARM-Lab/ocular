@@ -20,8 +20,8 @@ $color-selection: #dee2e6 !default;
 
 $color-text-dark: #d1cdc7 !default;
 $color-primary-dark: #e1814c !default;
-$color-light-dark: #222222 !default;
-$color-white-dark: #222222 !default;
+$color-light-dark: #000000 !default;
+$color-white-dark: #000000 !default;
 $color-black-dark: #e7e5e4 !default;
 $color-btn-dark: #cbc5bf !default;
 $color-border-dark: false !default;
@@ -403,7 +403,7 @@ body {
     box-sizing: border-box;
     overflow: hidden;
     line-height: 0;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--color-light);
     border-radius: 0.25rem;
     background: var(--color-light);
 }
