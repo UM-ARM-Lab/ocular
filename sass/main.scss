@@ -290,9 +290,9 @@ body {
 .capture-abstract {
     margin: 1.35rem 0 1.9rem;
     padding: 1rem 1.15rem 1.05rem;
-    border: 1px solid color-mix(in srgb, var(--color-border), var(--color-slide-accent) 28%);
+    border: 1px solid var(--color-text);
     border-radius: 0.4rem;
-    background: color-mix(in srgb, var(--color-light), var(--color-slide-accent) 5%);
+    background: transparent;
 }
 
 .capture-abstract p {
