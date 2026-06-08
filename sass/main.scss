@@ -18,11 +18,11 @@ $color-btn: #343a40 !default;
 $color-border: #dee2e6 !default;
 $color-selection: #dee2e6 !default;
 
-$color-text-dark: #d1cdc7 !default;
+$color-text-dark: #ffffff !default;
 $color-primary-dark: #e1814c !default;
 $color-light-dark: #000000 !default;
 $color-white-dark: #000000 !default;
-$color-black-dark: #e7e5e4 !default;
+$color-black-dark: #ffffff !default;
 $color-btn-dark: #cbc5bf !default;
 $color-border-dark: false !default;
 $color-selection-dark: false !default;
@@ -75,7 +75,7 @@ $color-selection-dark: false !default;
     --font-body: "Source Sans 3";
     --font-heading: "Barlow Condensed";
     --color-slide-accent: #e1814c;
-    --color-muted-copy: #d1cdc7;
+    --color-muted-copy: #ffffff;
 }
 
 body {
