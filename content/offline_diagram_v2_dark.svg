@@ -1318,7 +1318,7 @@
 <path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 20.492188 360.605469 L 185 360.605469 L 185 177.332031 L 20.492188 177.332031 Z M 20.492188 360.605469 "/>
 </g>
 <g clip-path="url(#clip12)" clip-rule="nonzero">
-<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 39.371094 333.167969 L 166.121094 333.167969 L 166.121094 191.957031 L 39.371094 191.957031 Z M 39.371094 333.167969 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 39.371094 333.167969 L 166.121094 333.167969 L 166.121094 191.957031 L 39.371094 191.957031 Z M 39.371094 333.167969 "/>
 </g>
 <g clip-path="url(#clip13)" clip-rule="nonzero">
 <use xlink:href="#image14" mask="url(#mask0)" transform="matrix(0.274182,0,0,0.305455,39.36958,191.74076)"/>
