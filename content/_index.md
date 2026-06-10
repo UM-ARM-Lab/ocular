@@ -21,8 +21,8 @@ favicon = true
 
 <section class="ocular-hero" aria-label="SplitCP and OCULAR rollout comparison">
 <p class="ocular-hero-caption">(Left) SplitCP calibrates dynamics uncertainty <em>globally</em>, possibly resulting in overconfident and/or overconservative motion. (Right) <strong>OCULAR</strong> calibrates dynamics uncertainty conditioned on velocity, action, and observation, and does not require data from the test-time environment.</p>
-<video autoplay muted loop controls playsinline preload="metadata" poster="./hero_videos/ocular_splitcp_ours_hero_maps.jpg">
-    <source src="./hero_videos/ocular_splitcp_ours_hero_maps.mp4" type="video/mp4">
+<video autoplay muted loop controls playsinline preload="metadata" poster="./hero_videos/ocular_splitcp_ours_hero_maps.jpg?v=20260610-failure-align">
+    <source src="./hero_videos/ocular_splitcp_ours_hero_maps.mp4?v=20260610-failure-align" type="video/mp4">
 </video>
 <p class="ocular-hero-legend">The blue marker indicates the start location and the pink markers the subgoals.</p>
 </section>
