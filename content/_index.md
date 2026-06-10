@@ -24,6 +24,7 @@ favicon = true
 <video autoplay muted loop controls playsinline preload="metadata" poster="./hero_videos/ocular_splitcp_ours_hero_maps.jpg">
     <source src="./hero_videos/ocular_splitcp_ours_hero_maps.mp4" type="video/mp4">
 </video>
+<p class="ocular-hero-legend">Blue marker indicates the start location and pink markers the subgoals.</p>
 </section>
 
 <section class="capture-abstract" aria-label="Abstract">
