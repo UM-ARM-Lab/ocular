@@ -344,6 +344,121 @@ body {
     margin-top: 0.15rem;
 }
 
+.experiment-switcher {
+    margin-top: 1.15rem;
+}
+
+.experiment-switcher-tabs {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-bottom: 1.7rem;
+    padding: 0.35rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 0.55rem;
+    background:
+        linear-gradient(110deg, color-mix(in srgb, var(--color-primary), transparent 92%), transparent 45%),
+        var(--color-light);
+}
+
+.experiment-switcher-tab {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    border: 0;
+    border-radius: 0.35rem;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 0.62rem 0.85rem 0.68rem;
+    font-family: var(--font-heading);
+    font-size: 1.17rem;
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: left;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.experiment-switcher-tab:hover {
+    color: var(--color-primary);
+}
+
+.experiment-switcher-tab.active {
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: 0 0.2rem 0.65rem color-mix(in srgb, var(--color-primary), transparent 76%);
+}
+
+.experiment-switcher-tab:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.experiment-switcher-kicker {
+    margin-bottom: 0.3rem;
+    opacity: 0.72;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0.065em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.experiment-panel {
+    animation: experiment-panel-enter 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.experiment-panel[hidden] {
+    display: none;
+}
+
+.experiment-panel > h2:first-child {
+    margin-top: 0;
+}
+
+@keyframes experiment-panel-enter {
+    from {
+        opacity: 0;
+        transform: translateX(1.25rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.experiment-panel-planar {
+    animation-name: experiment-panel-enter-planar;
+}
+
+@keyframes experiment-panel-enter-planar {
+    from {
+        opacity: 0;
+        transform: translateX(-1.25rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .experiment-switcher-tab {
+        transition: none;
+    }
+
+    .experiment-panel,
+    .experiment-panel-planar {
+        animation: none;
+    }
+}
+
 .inference-video-panel {
     width: 100%;
     margin: 1.3rem 0 1.8rem;
@@ -444,6 +559,15 @@ body {
     margin: 0.4rem 0 0;
     font-size: 1rem;
     line-height: 1.45;
+}
+
+.planar-video-panel .inference-video-stage {
+    border-radius: 0.3rem;
+    background: #000000;
+}
+
+.planar-planning-table {
+    min-width: 1180px;
 }
 
 .result-table-title {

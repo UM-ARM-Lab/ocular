@@ -56,6 +56,121 @@ $$
 {% end %}
 
 # Experiments
+
+<div class="experiment-switcher" data-experiment-switcher>
+    <div class="experiment-switcher-tabs" role="tablist" aria-label="Experiment platform">
+        <button type="button" class="experiment-switcher-tab active" role="tab" id="experiment-tab-isaac" aria-controls="experiment-panel-isaac" aria-selected="true" data-experiment-target="isaac">
+            <span class="experiment-switcher-kicker">Camera-based</span>
+            Isaac Sim
+        </button>
+        <button type="button" class="experiment-switcher-tab" role="tab" id="experiment-tab-planar" aria-controls="experiment-panel-planar" aria-selected="false" tabindex="-1" data-experiment-target="planar">
+            <span class="experiment-switcher-kicker">Simplified sensor</span>
+            Planar robot
+        </button>
+    </div>
+
+<section class="experiment-panel experiment-panel-planar" id="experiment-panel-planar" role="tabpanel" aria-labelledby="experiment-tab-planar" data-experiment-panel="planar" hidden>
+
+## Planar robot: slippery corridors
+
+We first evaluate **OCULAR** on a planar double-integrator with a simplified conic sensor across four slippery corridor maps (S, U, L, and H). Green regions follow the nominal dynamics, while white low-friction regions are out-of-distribution. As in the Isaac Sim experiments, **OCULAR** is calibrated without transitions from the tested map.
+
+At the start of each episode, the planner has no map of the environment. The known region grows online as the robot's conic sensor reveals nominal terrain, low-friction terrain, and obstacles.
+
+<div class="inference-video-panel planar-video-panel" data-video-picker data-video-template="./planar_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260723-planar-layout-v24-batch">
+    <div class="inference-picker-controls">
+        <div class="inference-picker-group" aria-label="Map">
+            <span class="inference-picker-label">Map</span>
+            <div class="inference-picker-options" role="group">
+                <button type="button" class="inference-option" data-video-token="map" data-video-value="S" aria-pressed="false">S</button>
+                <button type="button" class="inference-option active" data-video-token="map" data-video-value="U" aria-pressed="true">U</button>
+                <button type="button" class="inference-option" data-video-token="map" data-video-value="L" aria-pressed="false">L</button>
+                <button type="button" class="inference-option" data-video-token="map" data-video-value="H" aria-pressed="false">H</button>
+            </div>
+        </div>
+        <div class="inference-picker-group" aria-label="Episode">
+            <span class="inference-picker-label">Episode</span>
+            <div class="inference-picker-options" role="group">
+                <button type="button" class="inference-option active" data-video-token="episode" data-video-value="3" aria-pressed="true">3</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="4" aria-pressed="false">4</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="5" aria-pressed="false">5</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="6" aria-pressed="false">6</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="7" aria-pressed="false">7</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="8" aria-pressed="false">8</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="9" aria-pressed="false">9</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="10" aria-pressed="false">10</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="11" aria-pressed="false">11</button>
+                <button type="button" class="inference-option" data-video-token="episode" data-video-value="12" aria-pressed="false">12</button>
+            </div>
+        </div>
+        <div class="inference-picker-group" aria-label="Method">
+            <span class="inference-picker-label">Method</span>
+            <div class="inference-picker-options" role="group">
+                <button type="button" class="inference-option" data-video-token="method" data-video-value="nocp" aria-pressed="false">NoCP</button>
+                <button type="button" class="inference-option" data-video-token="method" data-video-value="split_cp" aria-pressed="false">SplitCP</button>
+                <button type="button" class="inference-option" data-video-token="method" data-video-value="lucca" aria-pressed="false">LUCCa</button>
+                <button type="button" class="inference-option" data-video-token="method" data-video-value="dtree_obs_samemap" aria-pressed="false">Ablation: test-map data</button>
+                <button type="button" class="inference-option" data-video-token="method" data-video-value="dtree_obs_va" aria-pressed="false">Ablation: velocity/action only</button>
+                <button type="button" class="inference-option active" data-video-token="method" data-video-value="dtree_obs" aria-pressed="true"><strong>OCULAR</strong></button>
+            </div>
+        </div>
+    </div>
+    <div class="inference-video-stage" data-video-stage></div>
+    <p class="inference-video-note" data-video-note hidden>Video for this map/episode/method is not available yet.</p>
+</div>
+
+<p class="result-table-title">Planning results across four planar environments (30 trials each).</p>
+<div class="result-table-wrap">
+<table class="result-table planar-planning-table" aria-label="Planning results across four planar environments, 30 trials each">
+    <thead>
+        <tr>
+            <th class="method-cell" rowspan="2">Method</th>
+            <th class="narrow-col" rowspan="2"><span class="nowrap">Tested map</span><br><span class="nowrap"><span class="header-negation">not</span> in <code>$D_{\mathrm{cal}}$</code>?</span></th>
+            <th colspan="4">Success (%) <svg class="metric-arrow metric-arrow-up" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M4.5 6.5 8 3l3.5 3.5"/></svg></th>
+            <th colspan="4">Steps to completion (mean &plusmn; std) <svg class="metric-arrow metric-arrow-down" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10m3.5-3.5L8 13 4.5 9.5"/></svg></th>
+        </tr>
+        <tr>
+            <th>S</th><th>L</th><th>H</th><th>U</th>
+            <th>S</th><th>L</th><th>H</th><th>U</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="method-cell">NoCP</td>
+            <td class="narrow-col"><span class="status neutral">N/A</span></td>
+            <td>33.3</td><td>0</td><td>6.7</td><td>0</td>
+            <td>214.8 &plusmn; 39.3</td><td>--</td><td><strong>155.5 &plusmn; 0.7</strong></td><td>--</td>
+        </tr>
+        <tr>
+            <td class="method-cell">SplitCP</td>
+            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+            <td>--</td><td>--</td><td>--</td><td>--</td>
+        </tr>
+        <tr>
+            <td class="method-cell">LUCCa</td>
+            <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
+            <td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td>
+            <td><strong>171.1 &plusmn; 12.1</strong></td><td><strong>211.2 &plusmn; 6.5</strong></td><td>203.2 &plusmn; 6.6</td><td><strong>283.3 &plusmn; 8.1</strong></td>
+        </tr>
+        <tr>
+            <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
+            <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
+            <td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td>
+            <td><strong>177.6 &plusmn; 7.0</strong></td><td><strong>213.6 &plusmn; 7.5</strong></td><td>199.7 &plusmn; 7.7</td><td><strong>278.1 &plusmn; 7.6</strong></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<p class="table-note">Success = reaching all subgoals without collisions. Completion steps are reported over successful trials.</p>
+
+</section>
+
+<section class="experiment-panel experiment-panel-isaac active" id="experiment-panel-isaac" role="tabpanel" aria-labelledby="experiment-tab-isaac" data-experiment-panel="isaac">
+
+## Isaac Sim: snow-covered T-junction
+
 We validate **OCULAR** on a double-integrator in Isaac Sim using a floating camera providing depth and semantic segmentation images. We evaluate across three snowy T-junction environments. The white lower-friction regions are out-of-distribution (OOD) relative to the approximate linear-Gaussian model `$\tilde{f}$`, which captures the robot dynamics over the asphalt road (ID). In all experiments, **OCULAR** uses no data from the test map (e.g., for icyMain evaluation, we use system transition data collected in icyMiddle and icySide).
 
 <div class="carousel-title">
@@ -254,11 +369,57 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
 
 <script>
 (() => {
+    const setupExperimentSwitcher = (switcher) => {
+        const tabs = [...switcher.querySelectorAll("[data-experiment-target]")];
+        const panels = [...switcher.querySelectorAll("[data-experiment-panel]")];
+        if (!tabs.length || !panels.length) return;
+
+        const activate = (target, moveFocus = false) => {
+            tabs.forEach((tab) => {
+                const isActive = tab.dataset.experimentTarget === target;
+                tab.classList.toggle("active", isActive);
+                tab.setAttribute("aria-selected", String(isActive));
+                tab.tabIndex = isActive ? 0 : -1;
+                if (isActive && moveFocus) tab.focus();
+            });
+            panels.forEach((panel) => {
+                const isActive = panel.dataset.experimentPanel === target;
+                panel.classList.toggle("active", isActive);
+                panel.hidden = !isActive;
+                panel.querySelectorAll("video").forEach((video) => {
+                    if (isActive && video.classList.contains("active")) {
+                        video.play().catch(() => {});
+                    } else {
+                        video.pause();
+                    }
+                });
+                if (isActive) {
+                    panel.querySelectorAll("[data-video-picker]").forEach(setupPicker);
+                }
+            });
+        };
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener("click", () => activate(tab.dataset.experimentTarget));
+            tab.addEventListener("keydown", (event) => {
+                if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                event.preventDefault();
+                const offset = event.key === "ArrowRight" ? 1 : -1;
+                const nextTab = tabs[(index + offset + tabs.length) % tabs.length];
+                activate(nextTab.dataset.experimentTarget, true);
+            });
+        });
+    };
+
     const setupPicker = (picker) => {
+        if (picker.dataset.videoPickerReady === "true") return;
+        if (picker.closest("[data-experiment-panel][hidden]")) return;
+
         const buttons = [...picker.querySelectorAll("[data-video-src], [data-video-token]")];
         const stage = picker.querySelector("[data-video-stage]");
         const note = picker.querySelector("[data-video-note]");
         if (!buttons.length || !stage || !note) return;
+        picker.dataset.videoPickerReady = "true";
 
         let activeVideo = null;
         let activeSrc = "";
@@ -379,6 +540,7 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
         }
     };
 
+    document.querySelectorAll("[data-experiment-switcher]").forEach(setupExperimentSwitcher);
     document.querySelectorAll("[data-video-picker]").forEach(setupPicker);
 })();
 </script>
@@ -452,6 +614,9 @@ These results indicate that **OCULAR** can generalize to new unseen environments
 <p class="table-note">Success = reaching all subgoals without collisions.</p>
 
 <p class="acknowledgment">This work was supported in part by the Office of Naval Research Grant N00014-24-1-2036 and NSF grants IIS-2113401 and IIS-2220876.</p>
+
+</section>
+</div>
 
 # BibTeX <small><small>(cite this!)</small></small>
 
