@@ -73,7 +73,7 @@ $$
 
 ## Planar robot: slippery corridors
 
-We first evaluate **OCULAR** on a planar double-integrator with a simplified conic sensor across four slippery corridor maps (S, U, L, and H). Green regions follow the nominal dynamics, while white low-friction regions are out-of-distribution. As in the Isaac Sim experiments, **OCULAR** is calibrated without transitions from the tested map.
+We evaluate **OCULAR** on a planar double-integrator with a simplified conic sensor across four slippery corridor maps (S, U, L, and H). Green regions follow the nominal dynamics, while white low-friction regions are out-of-distribution. As in the Isaac Sim experiments, **OCULAR** is calibrated without transitions from the tested map.
 
 At the start of each episode, the planner has no map of the environment. The known region grows online as the robot's conic sensor reveals nominal terrain, low-friction terrain, and obstacles.
 
@@ -139,7 +139,7 @@ At the start of each episode, the planner has no map of the environment. The kno
             <td class="method-cell">NoCP</td>
             <td class="narrow-col"><span class="status neutral">N/A</span></td>
             <td>33.3</td><td>0</td><td>6.7</td><td>0</td>
-            <td>214.8 &plusmn; 39.3</td><td>--</td><td><strong>155.5 &plusmn; 0.7</strong></td><td>--</td>
+            <td>214.8 &plusmn; 39.3</td><td>--</td><td>155.5 &plusmn; 0.7</td><td>--</td>
         </tr>
         <tr>
             <td class="method-cell">SplitCP</td>
@@ -150,14 +150,14 @@ At the start of each episode, the planner has no map of the environment. The kno
         <tr>
             <td class="method-cell">LUCCa</td>
             <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
-            <td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td>
-            <td><strong>171.1 &plusmn; 12.1</strong></td><td><strong>211.2 &plusmn; 6.5</strong></td><td>203.2 &plusmn; 6.6</td><td><strong>283.3 &plusmn; 8.1</strong></td>
+            <td>100</td><td>100</td><td>100</td><td>100</td>
+            <td>171.1 &plusmn; 12.1</td><td>211.2 &plusmn; 6.5</td><td>203.2 &plusmn; 6.6</td><td>283.3 &plusmn; 8.1</td>
         </tr>
         <tr>
             <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
             <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
-            <td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td>
-            <td><strong>177.6 &plusmn; 7.0</strong></td><td><strong>213.6 &plusmn; 7.5</strong></td><td>199.7 &plusmn; 7.7</td><td><strong>278.1 &plusmn; 7.6</strong></td>
+            <td>100</td><td>100</td><td>100</td><td>100</td>
+            <td>177.6 &plusmn; 7.0</td><td>213.6 &plusmn; 7.5</td><td>199.7 &plusmn; 7.7</td><td>278.1 &plusmn; 7.6</td>
         </tr>
     </tbody>
 </table>
@@ -268,20 +268,20 @@ Using Monte Carlo propagation, we estimate the likelihood of the prediction regi
             <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
             <td>1.08</td>
             <td>1.13</td>
-            <td><strong>1.02</strong></td>
-            <td><strong>1.10</strong></td>
-            <td><strong>1.02</strong></td>
+            <td>1.02</td>
+            <td>1.10</td>
+            <td>1.02</td>
             <td>1.13</td>
         </tr>
         <tr>
             <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
             <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
-            <td><strong>1.03</strong></td>
-            <td><strong>1.02</strong></td>
-            <td><strong>1.02</strong></td>
+            <td>1.03</td>
+            <td>1.02</td>
+            <td>1.02</td>
             <td>1.15</td>
             <td>1.06</td>
-            <td><strong>1.06</strong></td>
+            <td>1.06</td>
         </tr>
     </tbody>
 </table>
@@ -369,6 +369,12 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
 
 <script>
 (() => {
+    const isOnScreen = (element) => {
+        const rect = element.getBoundingClientRect();
+        const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+        return visibleHeight / rect.height >= 0.8;
+    };
+
     const setupExperimentSwitcher = (switcher) => {
         const tabs = [...switcher.querySelectorAll("[data-experiment-target]")];
         const panels = [...switcher.querySelectorAll("[data-experiment-panel]")];
@@ -386,15 +392,20 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
                 const isActive = panel.dataset.experimentPanel === target;
                 panel.classList.toggle("active", isActive);
                 panel.hidden = !isActive;
-                panel.querySelectorAll("video").forEach((video) => {
-                    if (isActive && video.classList.contains("active")) {
-                        video.play().catch(() => {});
-                    } else {
-                        video.pause();
-                    }
-                });
                 if (isActive) {
                     panel.querySelectorAll("[data-video-picker]").forEach(setupPicker);
+                    requestAnimationFrame(() => {
+                        if (panel.hidden) return;
+                        panel.querySelectorAll(
+                            'video.active, .video-carousel .carousel-slide:not([style*="display: none"]) video'
+                        ).forEach((video) => {
+                            if (!isOnScreen(video)) return;
+                            video.muted = true;
+                            video.play().catch(() => {});
+                        });
+                    });
+                } else {
+                    panel.querySelectorAll("video").forEach((video) => video.pause());
                 }
             });
         };
@@ -423,6 +434,7 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
 
         let activeVideo = null;
         let activeSrc = "";
+        let isPickerVisible = false;
         const videoCache = new Map();
 
         const setActiveButton = (selectedButton) => {
@@ -480,9 +492,11 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
             activeVideo = video;
             activeSrc = src;
             note.hidden = true;
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {});
+            if (isPickerVisible) {
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {});
+                }
             }
         };
 
@@ -491,7 +505,6 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
 
             const video = document.createElement("video");
             video.className = "inference-comparison-video";
-            video.autoplay = true;
             video.controls = true;
             video.loop = true;
             video.muted = true;
@@ -514,6 +527,18 @@ We observe that using the uncalibrated dynamics directly leads to gaining signif
             videoCache.set(src, video);
             return video;
         };
+
+        const visibilityObserver = new IntersectionObserver(([entry]) => {
+            isPickerVisible = entry.isIntersecting;
+            if (!activeVideo) return;
+
+            if (isPickerVisible && !picker.closest("[data-experiment-panel][hidden]")) {
+                activeVideo.play().catch(() => {});
+            } else {
+                activeVideo.pause();
+            }
+        }, { threshold: 0.8 });
+        visibilityObserver.observe(stage);
 
         const selectVideo = (button) => {
             setActiveButton(button);
@@ -590,9 +615,9 @@ These results indicate that **OCULAR** can generalize to new unseen environments
         <tr>
             <td class="method-cell">LUCCa</td>
             <td class="narrow-col"><span class="status cross" aria-label="No">&times;</span></td>
-            <td><strong>100</strong></td>
-            <td><strong>100</strong></td>
-            <td><strong>100</strong></td>
+            <td>100</td>
+            <td>100</td>
+            <td>100</td>
             <td>339.1 &plusmn; 8.7</td>
             <td>332.1 &plusmn; 13.1</td>
             <td>288.4 &plusmn; 7.8</td>
@@ -600,18 +625,18 @@ These results indicate that **OCULAR** can generalize to new unseen environments
         <tr>
             <td class="method-cell method-ours"><strong>OCULAR (ours)</strong></td>
             <td class="narrow-col"><span class="status check" aria-label="Yes">&#10003;</span></td>
-            <td><strong>100</strong></td>
-            <td><strong>100</strong></td>
-            <td><strong>100</strong></td>
-            <td><strong>208.1 &plusmn; 3.1</strong></td>
-            <td><strong>311.3 &plusmn; 4.7</strong></td>
-            <td><strong>278.6 &plusmn; 6.4</strong></td>
+            <td>100</td>
+            <td>100</td>
+            <td>100</td>
+            <td>208.1 &plusmn; 3.1</td>
+            <td>311.3 &plusmn; 4.7</td>
+            <td>278.6 &plusmn; 6.4</td>
         </tr>
     </tbody>
 </table>
 </div>
 
-<p class="table-note">Success = reaching all subgoals without collisions.</p>
+<p class="table-note">Success = reaching all subgoals without collisions. Completion steps are reported over successful trials.</p>
 
 <p class="acknowledgment">This work was supported in part by the Office of Naval Research Grant N00014-24-1-2036 and NSF grants IIS-2113401 and IIS-2220876.</p>
 
