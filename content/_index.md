@@ -77,7 +77,7 @@ We evaluate **OCULAR** on a planar double-integrator with a simplified conic sen
 
 At the start of each episode, the planner has no map of the environment. The known region grows online as the robot's conic sensor reveals nominal terrain, low-friction terrain, and obstacles.
 
-<div class="inference-video-panel planar-video-panel" data-video-picker data-video-template="./planar_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260723-planar-layout-v24-batch">
+<div class="inference-video-panel planar-video-panel" data-video-picker data-video-template="./planar_videos/single/{map}_episode_{episode}_{method}.mp4?v=20260725-direct-belief-dpi228">
     <div class="inference-picker-controls">
         <div class="inference-picker-group" aria-label="Map">
             <span class="inference-picker-label">Map</span>
