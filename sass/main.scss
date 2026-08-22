@@ -610,6 +610,15 @@ body {
     font-weight: 600;
 }
 
+.result-table strong {
+    color: inherit;
+    font-weight: 700;
+}
+
+.result-table .method-ours {
+    color: var(--color-slide-accent);
+}
+
 .result-table thead th {
     border-bottom-color: #333333;
     font-size: inherit;
@@ -667,7 +676,7 @@ body {
 .result-table .metric-section th {
     padding: 0.95rem 0.62rem 0.3rem;
     border-bottom: 0;
-    color: var(--color-primary);
+    color: var(--color-text);
     font-size: inherit;
     font-weight: 600;
     letter-spacing: 0;
@@ -684,7 +693,7 @@ body {
     width: 0.82em;
     height: 0.82em;
     margin-left: 0.18em;
-    color: var(--color-primary);
+    color: var(--color-text);
     overflow: visible;
     vertical-align: -0.08em;
 }
